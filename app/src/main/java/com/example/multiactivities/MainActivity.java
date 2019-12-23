@@ -1,16 +1,12 @@
 package com.example.multiactivities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
-//import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,15 +21,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //getActionBar().setHomeButtonEnabled(true);
-        //getActionBar().setDisplayShowHomeEnabled(true);
-
         // TextView
         textView = findViewById(R.id.text_hello);
         textView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
-
                 // Send an intent to open up the second Activity
                 Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
                 startActivity(intent);
