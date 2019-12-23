@@ -1,7 +1,9 @@
 package com.example.multiactivities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 
+//import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
         // ToolBar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //getActionBar().setHomeButtonEnabled(true);
+        //getActionBar().setDisplayShowHomeEnabled(true);
 
         // TextView
         textView = findViewById(R.id.text_hello);
