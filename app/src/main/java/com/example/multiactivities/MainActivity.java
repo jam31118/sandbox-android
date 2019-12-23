@@ -18,15 +18,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // ToolBar
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
         // TextView
-        textView = findViewById(R.id.text_hello);
+        textView = findViewById(R.id.text_N5);
         textView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Send an intent to open up the second Activity
                 Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
+                intent.putExtra("level",5);
                 startActivity(intent);
             }
         });
