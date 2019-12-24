@@ -25,12 +25,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class SecondActivity extends AppCompatActivity {
 
     private static final String TAG = "SecondActivity";
     ListView listView;
     SetAdapter setAdapter;
+
+    static final int numOfWordsPerSet = 25;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class SecondActivity extends AppCompatActivity {
                 "Selected vocab name: " + vocab_name, Toast.LENGTH_SHORT).show();
 
         listView = findViewById(R.id.listView_word_set);
-        setAdapter = new SetAdapter(numOfWords);
+        setAdapter = new SetAdapter(numOfWords, numOfWordsPerSet);
         listView.setAdapter(setAdapter);
 
     }
@@ -132,17 +135,17 @@ public class SecondActivity extends AppCompatActivity {
 
     class SetAdapter extends BaseAdapter {
 
-        int level;
-        int count;
+        int numOfWords, numOfWordsPerSet, numOfSets;
 
-        private SetAdapter(int level) {
-            this.level = level;
-            this.count = this.level * 2;
+        private SetAdapter(int numOfWords, int numOfWordsPerSet) {
+            this.numOfWords = numOfWords;
+            this.numOfWordsPerSet = numOfWordsPerSet;
+            this.numOfSets = (numOfWords + numOfWordsPerSet - 1) / numOfWordsPerSet;
         }
 
         @Override
         public int getCount() {
-            return this.count;
+            return numOfSets;
         }
 
         @Override
@@ -152,19 +155,20 @@ public class SecondActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int i) {
-            return i * 2;
+            return i;
         }
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-//            TextView textView_word_set = new TextView(getApplicationContext());
-//            textView_word_set.setText("Word Set " + i);
-//            return textView_word_set;
-
             SingleWordSetView single_word_set_view = new SingleWordSetView(getApplicationContext());
-            single_word_set_view.setText_word_set("WORD SET " + i);
+            int numOfDigits = -1;
+            if (numOfWords > 0) { numOfDigits = (int) Math.log10(numOfWords) + 1; }
+            else if (numOfWords == 0) { numOfDigits = 1; }
+            else { Log.e(TAG, "Invalid value for number of words given"); finish(); }
+            String word_set_label_form = "WORD SET %0"+numOfDigits+"d";
+            String word_set_label = String.format(Locale.getDefault(), word_set_label_form, i);
+            single_word_set_view.setText_word_set(word_set_label);
             return single_word_set_view;
-
         }
     }
 }
