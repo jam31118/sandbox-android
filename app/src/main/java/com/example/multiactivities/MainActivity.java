@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,18 +15,45 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     ListView listView_vocab_names;
-    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //// Load required information
+        // Load the list of vocabularies
+        ArrayList<String> vocabNameList = new ArrayList<>();
+        AssetManager assetManager = getResources().getAssets();
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(assetManager.open("vocab.list"))))
+        {
+            for (String line; (line = br.readLine()) != null; ) {
+                if (line.trim().length() > 0) { vocabNameList.add(line); }
+            }
+        }
+        catch (IOException e) { Log.e(TAG, "Failed to open 'vocab.list' file", e); }
+
+        // Check whether the fetched number of vocabularies are not zero or below
+        if (vocabNameList.size() < 1) {
+            Log.e(TAG, "Unexpected number of vocab names got");
+            throw new RuntimeException();
+        }
+
+
+        //// Construct Layout
+        // Set the parent layout
         setContentView(R.layout.activity_main);
 
         // ToolBar
@@ -33,11 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
         // ListView set-up
         listView_vocab_names = findViewById(R.id.listView_vocab_names);
-        ArrayList<String> vocabNameList = new ArrayList<String>(
-                Arrays.asList("N5","N4","N3","N2","N1"));
         VocabListAdapter vocabListAdapter = new VocabListAdapter(vocabNameList);
         listView_vocab_names.setAdapter(vocabListAdapter);
 
+
+        //// Set how each component should respond when touched
         // When each vocab name is clicked:
         listView_vocab_names.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -54,17 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-//        // TextView
-//        textView = findViewById(R.id.text_N5);
-//        textView.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // Send an intent to open up the second Activity
-//                Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
-//                intent.putExtra("level",5);
-//                startActivity(intent);
-//            }
-//        });
     }
 
     class VocabListAdapter extends BaseAdapter {
