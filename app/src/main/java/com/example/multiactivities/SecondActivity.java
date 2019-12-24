@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,8 +53,8 @@ public class SecondActivity extends AppCompatActivity {
 
         // Process given intent from the parent activity
         Intent intent_from_level_selection = getIntent();
-        String vocab_name = intent_from_level_selection.getStringExtra("vocab_name");
-        String vocab_file_name = String.format(
+        final String vocab_name = intent_from_level_selection.getStringExtra("vocab_name");
+        final String vocab_file_name = String.format(
                 getString(R.string.vocab_file_name_format), vocab_name);
         int numOfWords = getNumberOfWordsFromVocabFile(vocab_file_name);
 
@@ -63,6 +64,19 @@ public class SecondActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView_word_set);
         wordSetAdapter = new WordSetAdapter(numOfWords, numOfWordsPerSet);
         listView.setAdapter(wordSetAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int indexOfStartingWord = i * numOfWordsPerSet;
+                int[] indices = new int[numOfWordsPerSet];
+                for (int j = 0; j < numOfWordsPerSet; j++) { indices[j] = indexOfStartingWord + j; }
+                Intent intent = new Intent(getApplicationContext(), TrainingActivity.class);
+                intent.putExtra("indices", indices);
+                intent.putExtra("vocab_file_name", vocab_file_name);
+                startActivity(intent);
+            }
+        });
     }
 
     public int getNumberOfWordsFromVocabFile(String vocab_file_name) {
@@ -91,7 +105,7 @@ public class SecondActivity extends AppCompatActivity {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(assetManager.open(vocab_file_name)))) {
             for (String line; (line = br.readLine()) != null; ) {
-                arrayListVocab.add(new ArrayList<>(Arrays.asList(line.split("\\s*,\\s*"))));
+                arrayListVocab.add(new ArrayList<>(Arrays.asList(line.split("\\s*\\|\\s*"))));
             }
         } catch (IOException e) {
             String err_message = String.format(
@@ -170,5 +184,9 @@ public class SecondActivity extends AppCompatActivity {
             single_word_set_view.setText_word_set(word_set_label);
             return single_word_set_view;
         }
+
+//        public int getStartingWordIndex(int i) {
+//            return i * numOfWordsPerSet;
+//        }
     }
 }
