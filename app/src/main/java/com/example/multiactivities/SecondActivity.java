@@ -31,7 +31,7 @@ public class SecondActivity extends AppCompatActivity {
 
     private static final String TAG = "SecondActivity";
     ListView listView;
-    SetAdapter setAdapter;
+    WordSetAdapter wordSetAdapter;
 
     static final int numOfWordsPerSet = 25;
 
@@ -52,20 +52,17 @@ public class SecondActivity extends AppCompatActivity {
 
         // Process given intent from the parent activity
         Intent intent_from_level_selection = getIntent();
-//        int level = intent_from_level_selection.getIntExtra("level",0);
-        String vocab_name, vocab_file_name;
-        int numOfWords;
-        vocab_name = intent_from_level_selection.getStringExtra("vocab_name");
-        vocab_file_name = String.format(getString(R.string.vocab_file_name_format), vocab_name);
-        numOfWords = getNumberOfWordsFromVocabFile(vocab_file_name);
+        String vocab_name = intent_from_level_selection.getStringExtra("vocab_name");
+        String vocab_file_name = String.format(
+                getString(R.string.vocab_file_name_format), vocab_name);
+        int numOfWords = getNumberOfWordsFromVocabFile(vocab_file_name);
 
         Toast.makeText(getApplicationContext(),
                 "Selected vocab name: " + vocab_name, Toast.LENGTH_SHORT).show();
 
         listView = findViewById(R.id.listView_word_set);
-        setAdapter = new SetAdapter(numOfWords, numOfWordsPerSet);
-        listView.setAdapter(setAdapter);
-
+        wordSetAdapter = new WordSetAdapter(numOfWords, numOfWordsPerSet);
+        listView.setAdapter(wordSetAdapter);
     }
 
     public int getNumberOfWordsFromVocabFile(String vocab_file_name) {
@@ -77,7 +74,8 @@ public class SecondActivity extends AppCompatActivity {
                 new InputStreamReader(assetManager.open(vocab_file_name))))
         { for ( ; br.readLine() != null; ) { numOfWords++; } }
         catch (IOException e) {
-            String err_message = String.format(getString(R.string.file_open_err_message), vocab_file_name);
+            String err_message = String.format(
+                    getString(R.string.file_open_err_message), vocab_file_name);
             Log.e(TAG, err_message, e);
             finish();
         }
@@ -96,7 +94,8 @@ public class SecondActivity extends AppCompatActivity {
                 arrayListVocab.add(new ArrayList<>(Arrays.asList(line.split("\\s*,\\s*"))));
             }
         } catch (IOException e) {
-            String err_message = String.format(getString(R.string.file_open_err_message), vocab_file_name);
+            String err_message = String.format(
+                    getString(R.string.file_open_err_message), vocab_file_name);
             Log.e(TAG, err_message, e);
             finish();
         }
@@ -133,11 +132,11 @@ public class SecondActivity extends AppCompatActivity {
 
     }
 
-    class SetAdapter extends BaseAdapter {
+    class WordSetAdapter extends BaseAdapter {
 
         int numOfWords, numOfWordsPerSet, numOfSets;
 
-        private SetAdapter(int numOfWords, int numOfWordsPerSet) {
+        private WordSetAdapter(int numOfWords, int numOfWordsPerSet) {
             this.numOfWords = numOfWords;
             this.numOfWordsPerSet = numOfWordsPerSet;
             this.numOfSets = (numOfWords + numOfWordsPerSet - 1) / numOfWordsPerSet;
@@ -162,11 +161,12 @@ public class SecondActivity extends AppCompatActivity {
         public View getView(int i, View view, ViewGroup viewGroup) {
             SingleWordSetView single_word_set_view = new SingleWordSetView(getApplicationContext());
             int numOfDigits = -1;
-            if (numOfWords > 0) { numOfDigits = (int) Math.log10(numOfWords) + 1; }
+            if (numOfWords > 0) { numOfDigits = (int) Math.log10(numOfWords); }
             else if (numOfWords == 0) { numOfDigits = 1; }
             else { Log.e(TAG, "Invalid value for number of words given"); finish(); }
             String word_set_label_form = "WORD SET %0"+numOfDigits+"d";
-            String word_set_label = String.format(Locale.getDefault(), word_set_label_form, i);
+            String word_set_label = String.format(
+                    Locale.getDefault(), word_set_label_form, i+1);
             single_word_set_view.setText_word_set(word_set_label);
             return single_word_set_view;
         }
