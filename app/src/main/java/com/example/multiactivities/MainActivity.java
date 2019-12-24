@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Send an intent to open up the second Activity
                 Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
-                intent.putExtra("level",5);
+//                intent.putExtra("level",5);
                 intent.putExtra("vocab_name", vocab_name);
                 startActivity(intent);
             }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             for (String line, trimmed_line, vocab_file_name; (line = br.readLine()) != null; ) {
                 trimmed_line = line.trim();
                 if (trimmed_line.length() < 1) { continue; }
-                vocab_file_name = String.format("%1$s.csv", trimmed_line);
+                vocab_file_name = String.format(getString(R.string.vocab_file_name_format), trimmed_line);
 
                 if (asset_file_list.contains(vocab_file_name)) { vocabNameList.add(trimmed_line); }
                 else {

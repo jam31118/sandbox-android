@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Multi Activities</string>
+    <string name="file_open_err_message">"Failed to open %1$s file"</string>
+    <string name="vocab_file_name_format">"%1$s.csv"</string>
 </resources>
