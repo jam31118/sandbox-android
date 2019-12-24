@@ -16,7 +16,9 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar_training"
         app:layout_constraintBottom_toTopOf="@id/text_training_sub"
         app:layout_constraintVertical_weight="2"
-        android:id="@+id/text_training_main"/>
+        android:id="@+id/text_training_main"
+        android:textSize="50sp"
+        android:gravity="center"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -24,6 +26,8 @@
         app:layout_constraintTop_toBottomOf="@id/text_training_main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_weight="1"
-        android:id="@+id/text_training_sub"/>
+        android:id="@+id/text_training_sub"
+        android:textSize="40sp"
+        android:gravity="center"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

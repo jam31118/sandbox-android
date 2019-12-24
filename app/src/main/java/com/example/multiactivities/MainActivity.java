@@ -3,10 +3,13 @@ package com.example.multiactivities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         return vocabNameList;
     }
 
+
     class VocabListAdapter extends BaseAdapter {
 
         List<String> vocab_name_list;
@@ -134,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         public View getView(int i, View view, ViewGroup viewGroup) {
             TextView textView_vocab_name = new TextView(getApplicationContext());
             textView_vocab_name.setText(getItem(i).toString());
+            textView_vocab_name.setTextSize(50);
+            textView_vocab_name.setGravity(Gravity.CENTER);
             return textView_vocab_name;
         }
     }

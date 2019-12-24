@@ -97,25 +97,25 @@ public class SecondActivity extends AppCompatActivity {
         return numOfWords;
     }
 
-    public ArrayList<List<String>> getArrayListOfWordsFromVocabFile(String vocab_file_name) {
-
-        ArrayList<List<String>> arrayListVocab = new ArrayList<>();
-
-        AssetManager assetManager = getResources().getAssets();
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(assetManager.open(vocab_file_name)))) {
-            for (String line; (line = br.readLine()) != null; ) {
-                arrayListVocab.add(new ArrayList<>(Arrays.asList(line.split("\\s*\\|\\s*"))));
-            }
-        } catch (IOException e) {
-            String err_message = String.format(
-                    getString(R.string.file_open_err_message), vocab_file_name);
-            Log.e(TAG, err_message, e);
-            finish();
-        }
-
-        return arrayListVocab;
-    }
+//    public ArrayList<List<String>> getArrayListOfWordsFromVocabFile(String vocab_file_name) {
+//
+//        ArrayList<List<String>> arrayListVocab = new ArrayList<>();
+//
+//        AssetManager assetManager = getResources().getAssets();
+//        try (BufferedReader br = new BufferedReader(
+//                new InputStreamReader(assetManager.open(vocab_file_name)))) {
+//            for (String line; (line = br.readLine()) != null; ) {
+//                arrayListVocab.add(new ArrayList<>(Arrays.asList(line.split("\\s*\\|\\s*"))));
+//            }
+//        } catch (IOException e) {
+//            String err_message = String.format(
+//                    getString(R.string.file_open_err_message), vocab_file_name);
+//            Log.e(TAG, err_message, e);
+//            finish();
+//        }
+//
+//        return arrayListVocab;
+//    }
 
 
     class SingleWordSetView extends LinearLayout {
