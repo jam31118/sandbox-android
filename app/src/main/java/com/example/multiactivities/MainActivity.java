@@ -16,15 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String FILENAME_VOCAB_LIST = "vocab.list";
+    private static final String MESG_FORM_MISSING_FILE = "Failed to open %1$s file";
     private static final String TAG = "MainActivity";
     ListView listView_vocab_names;
 
@@ -34,22 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         //// Load required information
         // Load the list of vocabularies
-        ArrayList<String> vocabNameList = new ArrayList<>();
-        AssetManager assetManager = getResources().getAssets();
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(assetManager.open("vocab.list"))))
-        {
-            for (String line; (line = br.readLine()) != null; ) {
-                if (line.trim().length() > 0) { vocabNameList.add(line); }
-            }
-        }
-        catch (IOException e) { Log.e(TAG, "Failed to open 'vocab.list' file", e); }
-
-        // Check whether the fetched number of vocabularies are not zero or below
-        if (vocabNameList.size() < 1) {
-            Log.e(TAG, "Unexpected number of vocab names got");
-            throw new RuntimeException();
-        }
+        ArrayList<String> vocabNameList = loadVocabList();
 
 
         //// Construct Layout
@@ -83,6 +70,44 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private ArrayList<String> loadVocabList() {
+
+        // Load the list of vocabularies
+        ArrayList<String> vocabNameList = new ArrayList<>();
+        AssetManager assetManager = getResources().getAssets();
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(assetManager.open(FILENAME_VOCAB_LIST))))
+        {
+            for (String line, trimmed_line, voca_file_path; (line = br.readLine()) != null; ) {
+                trimmed_line = line.trim();
+                if (trimmed_line.length() < 1) { continue; }
+                voca_file_path = String.format("%1$s.csv", trimmed_line);
+                boolean file_exist = false;
+                InputStream is = null;
+                try { is = assetManager.open(voca_file_path); file_exist = true; }
+                catch (IOException e) {
+                    String err_mesg = String.format(MESG_FORM_MISSING_FILE, voca_file_path);
+                    Log.e(TAG, err_mesg, e);
+                    Toast.makeText(getApplicationContext(), err_mesg, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                finally { if (is != null) { is.close(); } }
+                if (file_exist) { vocabNameList.add(trimmed_line); }
+            }
+        }
+        catch (IOException e) {
+            Log.e(TAG, String.format(MESG_FORM_MISSING_FILE, FILENAME_VOCAB_LIST), e);
+        }
+
+        // Check whether the fetched number of vocabularies are not zero or below
+        if (vocabNameList.size() < 1) {
+            Log.e(TAG, "Unexpected number of vocab names got");
+            throw new RuntimeException();
+        }
+
+        return vocabNameList;
     }
 
     class VocabListAdapter extends BaseAdapter {
