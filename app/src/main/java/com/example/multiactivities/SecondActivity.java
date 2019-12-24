@@ -17,10 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.util.List;
-
 public class SecondActivity extends AppCompatActivity {
 
     ListView listView;
@@ -44,9 +40,10 @@ public class SecondActivity extends AppCompatActivity {
         // Process given intent from the parent activity
         Intent intent_from_level_selection = getIntent();
         int level = intent_from_level_selection.getIntExtra("level",0);
+        String vocab_name = intent_from_level_selection.getStringExtra("vocab_name");
 
         Toast.makeText(getApplicationContext(),
-                "Selected level: N" + level, Toast.LENGTH_SHORT).show();
+                "Selected vocab name: " + vocab_name, Toast.LENGTH_SHORT).show();
 
         listView = findViewById(R.id.listView_word_set);
 
@@ -59,37 +56,40 @@ public class SecondActivity extends AppCompatActivity {
 
     }
 
-//    class SingleWordSetView extends LinearLayout {
-//
-//        TextView text_view_word_set;
-//
-//        public SingleWordSetView(Context context) {
-//            super(context);
-//            init(context);
-//        }
-//
-//        public SingleWordSetView(Context context, AttributeSet attributeSet) {
-//            super(context, attributeSet);
-//            init(context);
-//        }
-//
-//        public void init(Context context) {
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
-//                    Context.LAYOUT_INFLATER_SERVICE);
-//            inflater.inflate(R.layout.textview_per_wordset,this,true);
-//
-//            text_view_word_set = findViewById(R.id.text_view_word_set);
-//        }
-//
-//        public void setText(String text) { text_view_word_set.setText(text); }
-//    }
+    class SingleWordSetView extends LinearLayout {
+
+        TextView text_view_word_set;
+
+        public SingleWordSetView(Context context) {
+            super(context);
+            init(context);
+        }
+
+        public SingleWordSetView(Context context, AttributeSet attributeSet) {
+            super(context, attributeSet);
+            init(context);
+        }
+
+        public void init(Context context) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            inflater.inflate(R.layout.textview_per_wordset,this,true);
+
+            text_view_word_set = findViewById(R.id.text_view_word_set);
+        }
+
+        public void setText_word_set(String text) {
+            text_view_word_set.setText(text);
+        }
+
+    }
 
     class SetAdapter extends BaseAdapter {
 
         int level;
         int count;
 
-        public SetAdapter(int level) {
+        private SetAdapter(int level) {
             this.level = level;
             this.count = this.level * 2;
         }
@@ -111,10 +111,14 @@ public class SecondActivity extends AppCompatActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            TextView textView_word_set = new TextView(getApplicationContext());
-//            SingleWordSetView single_word_set_view = new SingleWordSetView(getApplicationContext());
-            textView_word_set.setText("Word Set " + i);
-            return textView_word_set;
+//            TextView textView_word_set = new TextView(getApplicationContext());
+//            textView_word_set.setText("Word Set " + i);
+//            return textView_word_set;
+
+            SingleWordSetView single_word_set_view = new SingleWordSetView(getApplicationContext());
+            single_word_set_view.setText_word_set("WORD SET " + i);
+            return single_word_set_view;
+
         }
     }
 }
