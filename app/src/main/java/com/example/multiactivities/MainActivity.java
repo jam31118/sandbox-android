@@ -16,11 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         // ListView set-up
         listView_vocab_names = findViewById(R.id.listView_vocab_names);
-        VocabListAdapter vocabListAdapter = new VocabListAdapter(vocabNameList);
-        listView_vocab_names.setAdapter(vocabListAdapter);
+        listView_vocab_names.setAdapter(new VocabListAdapter(vocabNameList));
 
 
         //// Set how each component should respond when touched
@@ -80,21 +78,20 @@ public class MainActivity extends AppCompatActivity {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(assetManager.open(FILENAME_VOCAB_LIST))))
         {
-            for (String line, trimmed_line, voca_file_path; (line = br.readLine()) != null; ) {
+            List<String> asset_file_list = Arrays.asList(assetManager.list(""));
+
+            for (String line, trimmed_line, vocab_file_name; (line = br.readLine()) != null; ) {
                 trimmed_line = line.trim();
                 if (trimmed_line.length() < 1) { continue; }
-                voca_file_path = String.format("%1$s.csv", trimmed_line);
-                boolean file_exist = false;
-                InputStream is = null;
-                try { is = assetManager.open(voca_file_path); file_exist = true; }
-                catch (IOException e) {
-                    String err_mesg = String.format(MESG_FORM_MISSING_FILE, voca_file_path);
-                    Log.e(TAG, err_mesg, e);
+                vocab_file_name = String.format("%1$s.csv", trimmed_line);
+
+                if (asset_file_list.contains(vocab_file_name)) { vocabNameList.add(trimmed_line); }
+                else {
+                    String err_mesg = String.format(MESG_FORM_MISSING_FILE, vocab_file_name);
+                    Log.e(TAG, err_mesg);
                     Toast.makeText(getApplicationContext(), err_mesg, Toast.LENGTH_SHORT).show();
                     finish();
                 }
-                finally { if (is != null) { is.close(); } }
-                if (file_exist) { vocabNameList.add(trimmed_line); }
             }
         }
         catch (IOException e) {
