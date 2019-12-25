@@ -1,15 +1,18 @@
 package com.example.multiactivities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,8 +24,6 @@ import java.util.List;
 public class TrainingActivity extends AppCompatActivity {
 
     private static final String TAG = "TrainingActivitiy";
-
-    TextView textView_main, textView_sub;
 
     String vocab_file_name;
     int[] word_indices;
@@ -37,35 +38,60 @@ public class TrainingActivity extends AppCompatActivity {
         vocab_file_name = intent.getStringExtra("vocab_file_name");
         word_indices = intent.getIntArrayExtra("indices");
 
-        // Layout
+        //// Set Layout
         setContentView(R.layout.activity_training);
 
+        // Set Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar_training);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) { throw new NullPointerException(); }
         else { actionBar.setDisplayHomeAsUpEnabled(true); }
 
-        // TextViews
-        textView_main = findViewById(R.id.text_training_main);
-        textView_sub = findViewById(R.id.text_training_sub);
+        // Set ViewPager2
+        ViewPager2 viewPager2 = findViewById(R.id.pager);
+        WordTrainingPagerAdapter pagerAdapter = new WordTrainingPagerAdapter(this);
+        viewPager2.setAdapter(pagerAdapter);
 
+        //// Configure
 
-        arrayList_vocab = getArrayListOfWordsFromVocabFile(vocab_file_name);
-
-
-        // For test purpose
-        List<String> word;
-        word = arrayList_vocab.get(word_indices[0]);
-        String word_target, word_sound, word_meaning;
-        word_target = word.get(0);
-        word_sound = word.get(1);
-        word_meaning = word.get(2);
-
-        textView_main.setText(word_target);
-        textView_sub.setText(word_sound);
+//        String word_target, word_sound, word_meaning;
+//        word_target = word.get(0);
+//        word_sound = word.get(1);
+//        word_meaning = word.get(2);
+//
+//        textView_main.setText(word_target);
+//        textView_sub.setText(""); // the pronunciation is hidden at first
+//
+//         When each TextView is clicked
     }
 
+    private class WordTrainingPagerAdapter extends FragmentStateAdapter {
+
+        private WordTrainingPagerAdapter(FragmentActivity fa) {
+            super(fa);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+
+            TrainingFragment trainingFragment = new TrainingFragment();
+
+            arrayList_vocab = getArrayListOfWordsFromVocabFile(vocab_file_name);
+            ArrayList<String> word = new ArrayList<>(arrayList_vocab.get(word_indices[position]));
+            Bundle args = new Bundle();
+            args.putStringArrayList("word", word);
+            trainingFragment.setArguments(args);
+
+            return trainingFragment;
+        }
+
+        @Override
+        public int getItemCount() {
+            return word_indices.length;
+        }
+    }
 
     public ArrayList<List<String>> getArrayListOfWordsFromVocabFile(String vocab_file_name) {
 
