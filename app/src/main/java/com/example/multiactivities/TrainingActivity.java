@@ -23,7 +23,7 @@ import java.util.List;
 
 public class TrainingActivity extends AppCompatActivity {
 
-    private static final String TAG = "TrainingActivitiy";
+    private static final String TAG = "TrainingActivity";
 
     String vocab_file_name;
     int[] word_indices;
@@ -53,17 +53,6 @@ public class TrainingActivity extends AppCompatActivity {
         WordTrainingPagerAdapter pagerAdapter = new WordTrainingPagerAdapter(this);
         viewPager2.setAdapter(pagerAdapter);
 
-        //// Configure
-
-//        String word_target, word_sound, word_meaning;
-//        word_target = word.get(0);
-//        word_sound = word.get(1);
-//        word_meaning = word.get(2);
-//
-//        textView_main.setText(word_target);
-//        textView_sub.setText(""); // the pronunciation is hidden at first
-//
-//         When each TextView is clicked
     }
 
     private class WordTrainingPagerAdapter extends FragmentStateAdapter {
